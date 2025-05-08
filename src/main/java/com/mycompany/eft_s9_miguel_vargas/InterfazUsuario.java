@@ -48,7 +48,7 @@ public class InterfazUsuario {
     private void comprarEntradas() {
         System.out.println("\n--- Compra de Entradas ---");
         System.out.println("Máximo 5 entradas por transacción.");
-
+    
         for (int i = 0; i < 5; i++) {
             System.out.print("Ingrese tipo de cliente (Niño, Estudiante, Adulto Mayor, General): ");
             String tipoCliente = scanner.nextLine();
@@ -59,18 +59,26 @@ public class InterfazUsuario {
             System.out.print("Ingrese número de asiento: ");
             int asiento = scanner.nextInt() - 1;
             scanner.nextLine(); // Limpiar buffer
-
+    
             int fila = filaChar - 'A';
-
+    
             if (teatro.asignarAsiento(zona, fila, asiento)) {
-                Entrada entrada = new Entrada(tipoCliente, zona + "-" + filaChar + "-" + (asiento + 1));
+                // Generar datos necesarios para la entrada
+                int idVenta = gestorVentas.generarIdVenta(); // ID único de venta
+                double precioBase = calcularPrecioPorZona(zona); // Método para definir precios por zona
+                boolean esReserva = false; // Por defecto, no es reserva
+                double descuentoAplicado = obtenerDescuento(tipoCliente); // Aplicar descuento según tipo de cliente
+    
+                // Crear instancia de Entrada con parámetros correctos
+                Entrada entrada = new Entrada(idVenta, zona, fila, asiento, precioBase, filaChar, esReserva, descuentoAplicado);
+                
                 gestorVentas.agregarEntrada(entrada);
-                System.out.println("✔ Entrada asignada correctamente.");
+                System.out.println("Entrada asignada correctamente.");
             } else {
-                System.out.println("❌ Asiento no disponible, elija otro.");
+                System.out.println("Asiento no disponible, elija otro.");
                 i--; // Permitir que el usuario vuelva a ingresar un asiento válido
             }
-
+    
             System.out.print("¿Desea comprar otra entrada? (S/N): ");
             if (!scanner.nextLine().equalsIgnoreCase("S")) break;
         }
