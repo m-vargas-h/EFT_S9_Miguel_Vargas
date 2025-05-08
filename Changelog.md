@@ -1,6 +1,19 @@
 # Historial de cambios
 
-## 08/05/2025 - Implementación clases Entrada y Cliente (last commit)
+## 08/05/2025 - Implementación clase GestorVentas y main (last commit)
+- Se implemento la clase GestorVentas para la administración de la compra y gestión de entradas en el sistema,
+    dentro de las funciones principales de esta clase encontramos:
+    - Generación de ID para las ventas.
+    - Administración de la compra mediante los métodos agregarEntradas y eliminarEntradas.
+    - Procesamiento de los pagos según las opciones disponibles.
+    - Calculo de precios.
+
+- También se implementa la clase principal (con el nombre de la evaluación), que tiene por función principal unir
+    y llamar a las demás clases según sea necesario para la correcta ejecución del código.
+
+---
+
+### 08/05/2025 - Implementación clases Entrada y Cliente (commit efd4e5d)
 - Se implemento la clase Entrada usando como base el proyecto anterior, esta clase gestiona la información
     de cada boleto comprado, dentro de sus funcionalidades se encuentra:
     - Registrar información clave de la entrada, como la zona, el precio, asiento (fila y columna).
@@ -13,7 +26,9 @@
     - Gestionar la compra de entradas, asi como su modificación.
     - Mantener un historial de compras, para recuperar comprar anteriores.
 
-## 07/05/2025 - Desarrollo clases auxiliares (commit 103bf9d)
+---
+
+### 07/05/2025 - Desarrollo clases auxiliares (commit 103bf9d)
 - Se comienza el trabajo en la clase Teatro que estará encargada de la gestión de asientos:
     - Se crearon matrices booleanas para gestionar los asientos.
     - Se definió el método mostrarPlanoGeneral para mostrar el estado actual de los asientos del teatro.
@@ -29,6 +44,8 @@
     - Permite al usuario entrar en las opciones de modificación de compras.
     - Es capaz de gestionar el pago de las compras, asi como de evitar que el usuario salga del programa
         dejando compras pendientes.
+
+---
 
 ### 05/05/2025 - Carga inicial (commit e99e7fc)
 - Creación repositorio Evaluación Final Transversal con las siguientes clases:
