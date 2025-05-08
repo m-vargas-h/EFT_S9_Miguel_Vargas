@@ -33,9 +33,9 @@ public class GestorVentas {
     public void eliminarEntrada(int idVenta) {
         boolean eliminada = entradasVendidas.removeIf(entrada -> entrada.getIdVenta() == idVenta);
         if (eliminada) {
-            System.out.println("✔ Entrada eliminada correctamente.");
+            System.out.println("Entrada eliminada correctamente.");
         } else {
-            System.out.println("❌ No se encontró la entrada con ID: " + idVenta);
+            System.out.println("No se encontró la entrada con ID: " + idVenta);
         }
     }
 
@@ -46,18 +46,18 @@ public class GestorVentas {
             for (Entrada entrada : entradasVendidas) {
                 System.out.println(entrada);
             }
-            System.out.println("✔ Pago completado. ¡Gracias por su compra!");
+            System.out.println("Pago completado. ¡Gracias por su compra!");
             entradasVendidas.clear(); // Vaciar lista tras pago exitoso
         } else {
-            System.out.println("❌ No hay entradas pendientes de pago.");
+            System.out.println("No hay entradas pendientes de pago.");
         }
     }
 
     // Método para cancelar una compra y liberar los asientos
     public void cancelarCompra() {
-        System.out.println("\n❌ Cancelando compra...");
+        System.out.println("\nCancelando compra...");
         entradasVendidas.clear();
-        System.out.println("✔ Compra cancelada. Todos los asientos han sido liberados.");
+        System.out.println("Compra cancelada. Todos los asientos han sido liberados.");
     }
 
     // Verifica si hay entradas pendientes de pago
@@ -76,11 +76,11 @@ public class GestorVentas {
 
     public double obtenerDescuento(String tipoCliente) {
         return switch (tipoCliente.toLowerCase()) {
-            case "niño" -> 0.50;  // 50% de descuento
-            case "estudiante" -> 0.30; // 30% de descuento
-            case "adulto mayor" -> 0.40; // 40% de descuento
-            case "general" -> 0.00; // Sin descuento
-            default -> throw new IllegalArgumentException("Tipo de cliente inválido: " + tipoCliente);
+            case "niño" -> 0.10;
+            case "mujer" -> 0.20;
+            case "estudiante" -> 0.15;
+            case "adulto mayor" -> 0.25;
+            default -> 0.00;
         };
     }
 
@@ -91,10 +91,10 @@ public class GestorVentas {
                 entrada.setFila(nuevaFilaChar - 'A');
                 entrada.setFilaChar(nuevaFilaChar);
                 entrada.setColumna(nuevaColumna);
-                System.out.println("✔ Asiento modificado correctamente.");
+                System.out.println("Asiento modificado correctamente.");
                 return;
             }
         }
-        System.out.println("❌ No se encontró la entrada con ID: " + idVenta);
+        System.out.println("No se encontró la entrada con ID: " + idVenta);
     }
 }

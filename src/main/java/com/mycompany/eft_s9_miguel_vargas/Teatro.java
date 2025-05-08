@@ -6,9 +6,23 @@ package com.mycompany.eft_s9_miguel_vargas;
 
 public class Teatro {
     // Distribución de asientos: true = ocupado, false = libre
-    private static boolean[][] zonaVip = new boolean[2][6];
-    private static boolean[][] zonaNormal = new boolean[4][6];
-    private static boolean[][] zonaPalco = new boolean[3][6];
+    private static boolean[][] zonaVip = new boolean[2][6];       // 2 filas x 6 columnas
+    private static boolean[][] zonaPalco = new boolean[3][6];     // 3 filas x 6 columnas
+    private static boolean[][] zonaPlateaBaja = new boolean[4][7];// 4 filas x 7 columnas
+    private static boolean[][] zonaPlateaAlta = new boolean[5][8];// 5 filas x 8 columnas
+    private static boolean[][] zonaGaleria = new boolean[6][10];  // 6 filas x 10 columnas
+
+    // Método para obtener la matriz correspondiente a la zona
+    public boolean[][] obtenerZona(String zona) {
+        return switch (zona.toLowerCase()) {
+            case "vip" -> zonaVip;
+            case "palco" -> zonaPalco;
+            case "platea baja" -> zonaPlateaBaja;
+            case "platea alta" -> zonaPlateaAlta;
+            case "galería" -> zonaGaleria;
+            default -> new boolean[0][0]; // Retorna una matriz vacía en caso de zona inválida
+        };
+    }
 
     public Teatro() {
         inicializarAsientos();
@@ -19,36 +33,55 @@ public class Teatro {
         for (boolean[] fila : zonaVip) {
             java.util.Arrays.fill(fila, false);
         }
-        for (boolean[] fila : zonaNormal) {
-            java.util.Arrays.fill(fila, false);
-        }
         for (boolean[] fila : zonaPalco) {
             java.util.Arrays.fill(fila, false);
         }
+        for (boolean[] fila : zonaPlateaBaja) {
+            java.util.Arrays.fill(fila, false);
+        }
+        for (boolean[] fila : zonaPlateaAlta) {
+            java.util.Arrays.fill(fila, false);
+        }
+        for (boolean[] fila : zonaGaleria) {
+            java.util.Arrays.fill(fila, false);
+        }
     }
 
-    // Método para mostrar los asientos disponibles y ocupados
+    // Método para mostrar los asientos disponibles y ocupados en todas las zonas
     public void mostrarPlanoGeneral() {
         System.out.println("\n--- Plano de Asientos ---");
-        mostrarZona("VIP", zonaVip);
-        mostrarZona("Normal", zonaNormal);
-        mostrarZona("Palco", zonaPalco);
+        mostrarZona("VIP");
+        mostrarZona("Palco");
+        mostrarZona("Platea Baja");
+        mostrarZona("Platea Alta");
+        mostrarZona("Galería");
     }
 
-    private void mostrarZona(String nombre, boolean[][] zona) {
-        System.out.println("\nZona " + nombre + ":");
-        System.out.print("  "); // Alineación para etiquetas de columnas
-        for (int col = 0; col < zona[0].length; col++) {
-            System.out.print((col + 1) + " ");
+    public void mostrarZona(String zona) {
+        boolean[][] matrizZona = obtenerZona(zona);
+        if (matrizZona == null) {
+            System.out.println("❌ Zona no válida.");
+            return;
+        }
+    
+        System.out.println("\nZona " + zona + ":");
+    
+        // Imprimir números de columna alineados correctamente
+        System.out.print("  ");
+        for (int i = 0; i < matrizZona[0].length; i++) {
+            System.out.print((i + 1) + " "); 
         }
         System.out.println();
-
-        for (int fila = 0; fila < zona.length; fila++) {
-            System.out.print((char) ('A' + fila) + " "); // Etiqueta de filas
-            for (int col = 0; col < zona[fila].length; col++) {
-                System.out.print(zona[fila][col] ? "[X] " : "[O] ");
+    
+        // Imprimir filas con estado de los asientos
+        char filaLetra = 'A';
+        for (boolean[] fila : matrizZona) {
+            System.out.print(filaLetra + " ");
+            for (boolean asiento : fila) {
+                System.out.print((asiento ? "X " : "O ")); // Representación clara sin corchetes
             }
             System.out.println();
+            filaLetra++;
         }
     }
 
@@ -84,15 +117,7 @@ public class Teatro {
         return false;
     }
 
-    // Método auxiliar para obtener la matriz de la zona seleccionada
-    private boolean[][] obtenerZona(String zona) {
-        return switch (zona.toLowerCase()) {
-            case "vip" -> zonaVip;
-            case "normal" -> zonaNormal;
-            case "palco" -> zonaPalco;
-            default -> null;
-        };
-    }
+
 
     // Método auxiliar para validar si una ubicación es correcta
     private boolean validarUbicacion(boolean[][] zona, int fila, int asiento) {

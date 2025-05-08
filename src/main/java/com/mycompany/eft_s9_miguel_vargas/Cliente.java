@@ -1,4 +1,3 @@
-
 package com.mycompany.eft_s9_miguel_vargas;
 
 import java.util.ArrayList;
@@ -6,15 +5,30 @@ import java.util.List;
 
 public class Cliente {
     private String nombre;
+    private String correo;
     private int edad;
-    private String tipoCliente; // Niño, Estudiante, Adulto Mayor, General
+    private char genero;
+    private String tipoCliente;
+    private int idCliente;
     private List<Entrada> entradasCompradas;
 
-    public Cliente(String nombre, int edad, String tipoCliente) {
+    public Cliente(String nombre, String correo, int edad, char genero, int idCliente) {
         this.nombre = nombre;
+        this.correo = correo;
         this.edad = edad;
-        this.tipoCliente = tipoCliente;
+        this.genero = Character.toUpperCase(genero);
+        this.idCliente = idCliente; // Agregamos el ID del cliente
+        this.tipoCliente = determinarTipoCliente();
         this.entradasCompradas = new ArrayList<>();
+    }
+
+    // Método para determinar el tipo de cliente basado en edad y género
+    private String determinarTipoCliente() {
+        if (edad <= 12) return "niño";
+        if (edad >= 18 && edad <= 25) return "estudiante";
+        if (edad >= 60) return "adulto mayor";
+        if (genero == 'F') return "mujer";
+        return "general";
     }
 
     // Métodos para obtener información del cliente
@@ -22,8 +36,20 @@ public class Cliente {
         return nombre;
     }
 
+    public String getCorreo() {
+        return correo;
+    }
+
     public int getEdad() {
         return edad;
+    }
+
+    public char getGenero() {
+        return genero;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
     }
 
     public String getTipoCliente() {
@@ -40,7 +66,7 @@ public class Cliente {
             entradasCompradas.add(entrada);
             System.out.println("✔ Entrada agregada para " + nombre);
         } else {
-            System.out.println("❌ Límite de 5 entradas alcanzado para este cliente.");
+            System.out.println("Límite de 5 entradas alcanzado para este cliente.");
         }
     }
 

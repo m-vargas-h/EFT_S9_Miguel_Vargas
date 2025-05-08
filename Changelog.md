@@ -1,6 +1,26 @@
 # Historial de cambios
 
-## 08/05/2025 - Implementación clase GestorVentas y main (last commit)
+## 08/05/2025 - Corrección interfaz usuario (last commit)
+- Se corrigen las promociones vigentes con valores actualizados según requerimientos.
+
+- Se actualiza la matriz de asientos para incluir las opciones solicitadas, ademas de los métodos y clases
+    que hacen referencia a dichas matrices como la clase Teatro.
+
+- Se actualiza la clase cliente para almacenar información  como el nombre, correo y edad, ademas se añaden 
+    métodos que hagan uso de esa información para que el cliente solo deba proporcionar sus datos en la primera compra, luego de eso solo deberá indicar su ID.
+
+- Ahora la clase InterfazUsuario permite registrar usuarios y recuperar su información para que deba ser ingresada
+    en cada ocasión.
+
+- Se actualiza el menu con las siguientes funciones:
+    - permite registrar un usuario
+    - Las zonas se muestran ahora como una lista
+    - la opción de compra muestra los asientos disponibles antes de solicitar los datos
+    - se muestra un detalle de las entradas seleccionadas antes de volver al menu principal
+    - la opción de pago admite pagos con débito y crédito, ademas de la opción de cancelar la compra
+---
+
+### 08/05/2025 - Implementación clase GestorVentas y main (commit 5094fd2)
 - Se implemento la clase GestorVentas para la administración de la compra y gestión de entradas en el sistema,
     dentro de las funciones principales de esta clase encontramos:
     - Generación de ID para las ventas.
