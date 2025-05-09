@@ -10,6 +10,7 @@ public class Entrada {
     private char filaChar;
     private boolean esReserva;
     private double descuentoAplicado;
+    private int zonaSeleccionada;
 
     public Entrada(int idVenta, String zona, int fila, int columna, double precioBase, char filaChar, boolean esReserva, double descuentoAplicado) {
         this.idVenta = idVenta;
@@ -30,6 +31,10 @@ public class Entrada {
     public String getEntradaActualizada() {
         return "Venta ID: " + idVenta + " | Zona: " + zona + " | Asiento: " + filaChar + (columna + 1) +
                " | Precio final: $" + calcularPrecioFinal();
+    }
+
+    public int getZonaSeleccionada() { // 🔹 Método getter
+        return zonaSeleccionada;
     }
 
     public String getZona() {

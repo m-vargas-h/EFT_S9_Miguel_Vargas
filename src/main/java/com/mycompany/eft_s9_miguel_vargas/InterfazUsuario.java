@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class InterfazUsuario {
+
+    private List<Entrada> entradasCompradas = new ArrayList<>();
+    private Cliente clienteActual; // 🔹 Cliente accesible en toda la clase
+
     private GestorVentas gestorVentas;
     private Teatro teatro;
     private Scanner scanner;
@@ -69,7 +73,7 @@ public class InterfazUsuario {
             case 3 -> verAsientosDisponibles();
             case 4 -> verPromociones();
             case 5 -> modificarCompra();
-            case 6 -> procesarPago();
+            case 6 -> procesarPago(scanner);
             case 7 -> {
                 salirMenu();
                 return false;
@@ -96,7 +100,7 @@ public class InterfazUsuario {
         int idCliente = scanner.nextInt();
         scanner.nextLine(); 
     
-        Cliente clienteActual = buscarClientePorID(idCliente);
+        clienteActual = buscarClientePorID(idCliente);
     
         if (clienteActual == null) {
             System.out.println("❌ Cliente no encontrado. Verifique su ID.");
@@ -274,76 +278,108 @@ public class InterfazUsuario {
         }
     }
 
-    private void procesarPago() {
+    public void procesarPago(Scanner scanner) {  
         System.out.println("\n--- Procesar Pago ---");
-    
-        System.out.print("Ingrese su ID de cliente: ");
-        int idCliente = scanner.nextInt();
-        scanner.nextLine(); 
-    
-        Cliente clienteActual = buscarClientePorID(idCliente);
-    
-        if (clienteActual == null) {
-            System.out.println("❌ Cliente no encontrado. Verifique su ID.");
+
+        if (entradasCompradas.isEmpty()) {
+            System.out.println("❌ No hay compras realizadas. Por favor, compre sus entradas antes de proceder al pago.");
             return;
         }
-    
-        List<Entrada> entradas = clienteActual.getEntradasCompradas();
-        if (entradas.isEmpty()) {
-            System.out.println("❌ No tiene entradas para pagar.");
-            return;
-        }
-    
-        // 🔹 Calcular total a pagar considerando descuentos
+
+        // 🔹 Mostrar resumen de compra
         double total = 0;
         System.out.println("\n--- Resumen de Compra ---");
-        System.out.println("Cantidad de Entradas: " + entradas.size());
-    
-        for (Entrada entrada : entradas) {
+        System.out.println("Cantidad de Entradas: " + entradasCompradas.size());
+
+        for (Entrada entrada : entradasCompradas) {
             double precioFinal = entrada.getPrecioBase() - entrada.getDescuentoAplicado();
             total += precioFinal;
         }
-    
+
         System.out.println("Total a Pagar: $" + total);
         System.out.println("------------------------");
-    
+
         // 🔹 Confirmar antes de proceder
         System.out.print("¿Desea continuar con el pago? (S/N): ");
         if (!scanner.nextLine().equalsIgnoreCase("S")) {
             System.out.println("❌ Pago cancelado. Puede modificar su compra si lo desea.");
             return;
         }
-    
-        System.out.println("\nSeleccione método de pago:");
+
+        System.out.println("\nSeleccione el medio de pago:");
         System.out.println("1. Débito");
         System.out.println("2. Crédito");
-        System.out.println("3. Cancelar compra");
+        System.out.println("3. Transferencia");
+        System.out.println("4. Cancelar compra");
         System.out.print("Ingrese opción: ");
-    
-        int metodoPago = scanner.nextInt();
-        scanner.nextLine(); 
-    
-        switch (metodoPago) {
-            case 1 -> System.out.println("✔ Pago con tarjeta de débito procesado.");
-            case 2 -> System.out.println("✔ Pago con tarjeta de crédito procesado.");
+
+        int opcionPago = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (opcionPago) {
+            case 1 -> procesarPagoDebito(scanner);
+            case 2 -> procesarPagoCredito(scanner);
             case 3 -> {
-                System.out.println("❌ Compra cancelada. Volviendo al menú principal...");
+                System.out.println("❌ Compra cancelada. Vuelve pronto.");
                 return;
             }
             default -> {
-                System.out.println("❌ Método inválido. Intente nuevamente.");
+                System.out.println("❌ Opción inválida.");
                 return;
             }
         }
-    
-        System.out.println("\n✅ Pago exitoso. Gracias por su compra.");
+
+        // 🔹 Generar boleta solo si el pago fue exitoso
+        gestorVentas.generarBoleta(clienteActual);
+        entradasCompradas.clear();
+        System.out.println("✅ Compra completada correctamente.");
+    }
+
+    private void procesarPagoDebito(Scanner scanner) {
+        System.out.print("Antes de continuar, ingrese su correo electrónico: ");
+        String correo = scanner.nextLine();
+
+        System.out.println("Procesando pago con tarjeta de débito...");
+        esperarProcesamiento();
+
+        System.out.println("✅ Pago confirmado. Su boleta y entradas serán enviadas al correo " + correo);
+    }
+
+    private void procesarPagoCredito(Scanner scanner) {
+        System.out.print("Antes de continuar, ingrese su correo electrónico: ");
+        String correo = scanner.nextLine();
+
+        int cuotas;
+        do {
+            System.out.print("Seleccione el número de cuotas (1 a 12): ");
+            cuotas = scanner.nextInt();
+            scanner.nextLine(); // Limpiar buffer
+
+            if (cuotas < 1 || cuotas > 12) {
+                System.out.println("❌ Número de cuotas inválido. Intente nuevamente.");
+            }
+        } while (cuotas < 1 || cuotas > 12);
+
+        System.out.println("Procesando pago con tarjeta de crédito en " + cuotas + " cuotas...");
+        esperarProcesamiento();
+
+        System.out.println("✅ Pago confirmado en " + cuotas + " cuotas. Su boleta y entradas serán enviadas al correo " + correo);
+    }
+
+    // 🔹 Simulación de procesamiento de pago
+    private void esperarProcesamiento() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println("❌ Error en la simulación de pago.");
+        }
     }
 
     private void salirMenu() {
         if (gestorVentas.tieneEntradasPendientes()) {
             System.out.println("\nTiene compras pendientes de pago.");
             System.out.println("Se le redirigirá automáticamente al menú de pago.");
-            procesarPago();
+            procesarPago(scanner);
         } else {
             System.out.println("\nGracias por usar nuestro sistema. ¡Hasta luego!");
         }

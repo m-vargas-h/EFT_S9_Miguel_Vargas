@@ -11,6 +11,7 @@ public class Cliente {
     private String tipoCliente;
     private int idCliente;
     private List<Entrada> entradasCompradas;
+     private int idCompraActual;
 
     public Cliente(String nombre, String correo, int edad, char genero, int idCliente) {
         this.nombre = nombre;
@@ -32,6 +33,10 @@ public class Cliente {
     }
 
     // Métodos para obtener información del cliente
+    public int getIdCompraActual() { // 🔹 Método getter
+        return idCompraActual;
+    }
+
     public String getNombre() {
         return nombre;
     }

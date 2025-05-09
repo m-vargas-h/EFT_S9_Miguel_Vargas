@@ -97,4 +97,50 @@ public class GestorVentas {
         }
         System.out.println("No se encontró la entrada con ID: " + idVenta);
     }
+
+    public void generarBoleta(Cliente cliente) {
+    if (cliente.getEntradasCompradas().isEmpty()) {
+        System.out.println("❌ No hay entradas compradas para generar la boleta.");
+        return;
+    }
+
+    System.out.println("\n--------------- BOLETA ---------------");
+    System.out.println("                Nº 000" + cliente.getIdCompraActual());
+    System.out.println("             TEATRO MORO");
+    System.out.println(" SHOW: De vuelta a clases con el GOTH");
+    System.out.println("--------------------------------------");
+
+    double totalNeto = 0;
+    double totalIVA = 0;
+    double totalFinal = 0;
+
+    for (Entrada entrada : cliente.getEntradasCompradas()) {
+        String zona = switch (entrada.getZonaSeleccionada()) {
+            case 1 -> "VIP";
+            case 2 -> "Normal";
+            case 3 -> "Palco";
+            default -> "Desconocida";
+        };
+
+        double precioConDescuento = entrada.getPrecioBase() * (1 - entrada.getDescuentoAplicado());
+        double ivaPorEntrada = precioConDescuento * 0.19;
+        double precioNetoEntrada = precioConDescuento - ivaPorEntrada;
+
+        totalNeto += precioNetoEntrada;
+        totalIVA += ivaPorEntrada;
+        totalFinal += precioConDescuento;
+
+        System.out.println("Entrada: Zona " + zona + ", Asiento: " + entrada.getFilaChar() + (entrada.getColumna() + 1));
+        System.out.println("Precio base: $" + entrada.getPrecioBase());
+        System.out.println("Descuento aplicado: " + (entrada.getDescuentoAplicado() * 100) + "%");
+        System.out.println("--------------------------------------");
+    }
+
+    System.out.println("-------- RESUMEN DE LA COMPRA --------");
+    System.out.println("Subtotal (Neto)     : $" + totalNeto);
+    System.out.println("IVA (19%)           : $" + totalIVA);
+    System.out.println("TOTAL FINAL A PAGAR : $" + totalFinal);
+    System.out.println("--------------------------------------");
+    System.out.println("¡Gracias por tu compra!");
+}
 }

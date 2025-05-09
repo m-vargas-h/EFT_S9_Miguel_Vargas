@@ -1,6 +1,12 @@
 # Historial de cambios
 
-## 08/05/2025 - Corrección interfaz usuario (last commit)
+## 08/05/2025 - Implementación medios de pago (last commit)
+- Se implementan las opciones de pago débito y crédito para el menu de compra, ademas de una opción para
+    cancelar la transacción.
+
+---
+
+### 08/05/2025 - Corrección interfaz usuario (commit c823335)
 - Se corrigen las promociones vigentes con valores actualizados según requerimientos.
 
 - Se actualiza la matriz de asientos para incluir las opciones solicitadas, ademas de los métodos y clases
@@ -18,6 +24,7 @@
     - la opción de compra muestra los asientos disponibles antes de solicitar los datos
     - se muestra un detalle de las entradas seleccionadas antes de volver al menu principal
     - la opción de pago admite pagos con débito y crédito, ademas de la opción de cancelar la compra
+    
 ---
 
 ### 08/05/2025 - Implementación clase GestorVentas y main (commit 5094fd2)
