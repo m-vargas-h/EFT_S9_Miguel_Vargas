@@ -1,6 +1,15 @@
 # Historial de cambios
 
-## 10/05/2025 - Corrección opciones modificación de entradas (last commit)
+## 10/05/2025 - V1.1 Sistema de ventas Teatro Moro (last commit)
+- El programa ahora cuenta con la capacidad de guardar la información de entradas vendidas y clientes registrados
+    en ficheros .scv para recuperar la información en ejecuciones posteriores. Ahora cuando un cliente se registre
+    solo deberá completar su información 1 vez, posterior a eso podrá comprar utilizando solo su ID.
+
+- Se corrige la generación de la boleta para que muestre la información de forma correcta
+
+- Se corrigen textos de diversos métodos para mejorar la experiencia de usuario.
+
+### 10/05/2025 - Corrección opciones modificación de entradas (commit ba78019)
 - Se corrige una serie de errores que impedían que el menu de modificación de compra funcionara correctamente
     - La opción de agregar entradas ya no pide la información duplicada y agrega las entradas extras al plano 
         de asientos.

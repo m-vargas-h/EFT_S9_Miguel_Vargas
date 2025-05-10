@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.mycompany.eft_s9_miguel_vargas;
 
 public class Teatro {
@@ -19,7 +16,7 @@ public class Teatro {
             case "palco" -> zonaPalco;
             case "platea baja" -> zonaPlateaBaja;
             case "platea alta" -> zonaPlateaAlta;
-            case "galería" -> zonaGaleria;
+            case "galeria" -> zonaGaleria;
             default -> new boolean[0][0]; // Retorna una matriz vacía en caso de zona inválida
         };
     }
@@ -54,13 +51,13 @@ public class Teatro {
         mostrarZona("Palco");
         mostrarZona("Platea Baja");
         mostrarZona("Platea Alta");
-        mostrarZona("Galería");
+        mostrarZona("Galeria");
     }
 
     public void mostrarZona(String zona) {
         boolean[][] matrizZona = obtenerZona(zona);
         if (matrizZona == null) {
-            System.out.println("❌ Zona no válida.");
+            System.out.println("Zona no válida.");
             return;
         }
     
@@ -93,11 +90,11 @@ public class Teatro {
                 seleccion[fila][asiento] = true;
                 return true;
             } else {
-                System.out.println("❌ Asiento ya ocupado.");
+                System.out.println("Asiento ya ocupado.");
                 return false;
             }
         }
-        System.out.println("❌ Ubicación inválida.");
+        System.out.println("Ubicación inválida.");
         return false;
     }
 
@@ -109,15 +106,13 @@ public class Teatro {
                 seleccion[fila][asiento] = false;
                 return true;
             } else {
-                System.out.println("❌ El asiento ya estaba libre.");
+                System.out.println("El asiento ya estaba libre.");
                 return false;
             }
         }
-        System.out.println("❌ Ubicación inválida.");
+        System.out.println("Ubicación inválida.");
         return false;
     }
-
-
 
     // Método auxiliar para validar si una ubicación es correcta
     private boolean validarUbicacion(boolean[][] zona, int fila, int asiento) {

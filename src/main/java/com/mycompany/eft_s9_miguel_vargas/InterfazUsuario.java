@@ -7,8 +7,7 @@ import java.util.Scanner;
 
 public class InterfazUsuario {
 
-    private List<Entrada> entradasCompradas = new ArrayList<>();
-    private Cliente clienteActual; // 🔹 Cliente accesible en toda la clase
+    private Cliente clienteActual; // Cliente accesible en toda la clase
 
     private GestorVentas gestorVentas;
     private Teatro teatro;
@@ -34,11 +33,11 @@ public class InterfazUsuario {
 
         System.out.print("Ingrese su edad: ");
         int edad = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
 
         System.out.print("Ingrese su género (M/F): ");
         char genero = scanner.next().toUpperCase().charAt(0);
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
 
         // Generar ID único
         int idCliente = contadorID++;
@@ -49,6 +48,9 @@ public class InterfazUsuario {
 
         System.out.println("\n✔ Cliente registrado correctamente.");
         System.out.println("ID Asignado: " + idCliente);
+
+        // Registramos el cliente en el fichero para tener una bse de datos actualizada
+        PersistenciaClientes.guardarCliente(nuevoCliente, "clientes.csv");
     }
 
     public void mostrarMenu() {
@@ -61,7 +63,7 @@ public class InterfazUsuario {
         while (continuar) {
             menu();
             int opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar buffer
+            scanner.nextLine();
             continuar = procesarOpcion(opcion);
         }
     }
@@ -100,14 +102,14 @@ public class InterfazUsuario {
         int idCliente = scanner.nextInt();
         scanner.nextLine(); 
     
-        clienteActual = buscarClientePorID(idCliente);
+        clienteActual = gestorVentas.buscarClientePorID(idCliente);
     
         if (clienteActual == null) {
-            System.out.println("❌ Cliente no encontrado. Verifique su ID.");
+            System.out.println("Cliente no encontrado. Verifique su ID.");
             return;
         }
     
-        System.out.println("\n✔ Cliente identificado: " + clienteActual.getNombre());
+        System.out.println("\nCliente identificado: " + clienteActual.getNombre());
         System.out.println("Correo: " + clienteActual.getCorreo());
         System.out.println("Tipo de Cliente: " + clienteActual.getTipoCliente());
     
@@ -118,14 +120,14 @@ public class InterfazUsuario {
             scanner.nextLine(); 
     
             if (cantidadEntradas < 1 || cantidadEntradas > maxEntradas) {
-                System.out.println("❌ Número inválido. Debe elegir entre 1 y " + maxEntradas + " entradas.");
+                System.out.println("Número inválido. Debe elegir entre 1 y " + maxEntradas + " entradas.");
             }
         } while (cantidadEntradas < 1 || cantidadEntradas > maxEntradas);
     
         List<Entrada> entradasCompradas = new ArrayList<>();
     
         for (int i = 0; i < cantidadEntradas; i++) {
-            System.out.println("\n➡ Seleccionando Entrada #" + (i + 1));
+            System.out.println("\nSeleccionando Entrada #" + (i + 1));
     
             System.out.println("\nSeleccione la zona:");
             System.out.println("1. VIP");
@@ -143,9 +145,9 @@ public class InterfazUsuario {
                 case 2 -> "platea baja";
                 case 3 -> "platea alta";
                 case 4 -> "palco";
-                case 5 -> "galería";
+                case 5 -> "galeria";
                 default -> {
-                    System.out.println("❌ Opción inválida. Intente nuevamente.");
+                    System.out.println("Opción inválida. Intente nuevamente.");
                     i--;
                     yield null;
                 }
@@ -172,20 +174,19 @@ public class InterfazUsuario {
                 Entrada entrada = new Entrada(idVenta, zona, fila, asiento, precioBase, filaChar, esReserva, descuentoAplicado);
                 
                 entradasCompradas.add(entrada);
-                //gestorVentas.agregarEntrada(entrada);
                 clienteActual.agregarEntrada(entrada);
-                System.out.println("✔ Entrada #" + (i + 1) + " asignada correctamente.");
+                System.out.println("Entrada #" + (i + 1) + " asignada correctamente.");
             } else {
-                System.out.println("❌ Asiento no disponible, elija otro.");
+                System.out.println("Asiento no disponible, elija otro.");
                 i--;
             }
         }
     
-        // 🔹 Mostrar resumen solo al final
+        // Mostrar resumen solo al final
         System.out.println("\n--- Detalle de Compra ---");
         for (int i = 0; i < entradasCompradas.size(); i++) {
             Entrada entrada = entradasCompradas.get(i);
-            System.out.println("E" + (i + 1) + " → ID Venta: " + entrada.getIdVenta() +
+            System.out.println("E" + (i + 1) + ", ID Venta: " + entrada.getIdVenta() +
                                ", Zona: " + entrada.getZona() + 
                                ", Asiento: " + entrada.getFilaChar() + (entrada.getColumna() + 1) + 
                                ", Descuento aplicado: $" + entrada.getDescuentoAplicado() + 
@@ -203,7 +204,7 @@ public class InterfazUsuario {
         int disponibles = maxAllowed - currentCount;
     
         if (disponibles <= 0) {
-            System.out.println("❌ No puedes agregar más entradas en esta transacción.");
+            System.out.println("No puedes agregar más entradas en esta transacción.");
             return;
         }
     
@@ -215,13 +216,10 @@ public class InterfazUsuario {
         scanner.nextLine(); // Consumir salto de línea
 
         if (cantidadAAgregar < 1 || cantidadAAgregar > disponibles) {
-            System.out.println("❌ Cantidad inválida. Solo puedes agregar entre 1 y " + disponibles + " entrada(s).");
+            System.out.println("Cantidad inválida. Solo puedes agregar entre 1 y " + disponibles + " entrada(s).");
             return;
         }
     
-        // Aquí simplemente redirigimos al flujo de compra de entradas
-        // Se asume que el método comprarEntradas(int idCliente) ya maneja
-        // el proceso de selección de asientos sin volver a pedir el ID.
         comprarEntradas(clienteActual.getIdCliente());
     }
 
@@ -234,7 +232,7 @@ public class InterfazUsuario {
         System.out.println("\n--- Promociones Vigentes ---");
         System.out.println("1. Descuento del 10% para niños.");
         System.out.println("2. Descuento del 20% para mujeres.");
-        System.out.println("3. Descuento del 15% para estudiantes.*");
+        System.out.println("3. Descuento del 15% para estudiantes.");
         System.out.println("4. Descuento del 25% para personas de tercera edad.");
     }
 
@@ -245,16 +243,16 @@ public class InterfazUsuario {
         System.out.println("3. Modificar asiento.");
     
         int opcion = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
     
         System.out.print("Ingrese su ID de cliente: ");
         int idCliente = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
     
         Cliente clienteActual = buscarClientePorID(idCliente);
     
         if (clienteActual == null) {
-            System.out.println("❌ Cliente no encontrado. Verifique su ID.");
+            System.out.println("Cliente no encontrado. Verifique su ID.");
             return;
         }
     
@@ -264,9 +262,9 @@ public class InterfazUsuario {
         switch (opcion) {
             case 1 -> {
                 if (maxEntradasDisponibles <= 0) {
-                    System.out.println("❌ No puede agregar más entradas. Ya tiene el máximo permitido.");
+                    System.out.println("No puede agregar más entradas. Ya tiene el máximo permitido.");
                 } else {
-                    System.out.println("\n✔ Actualmente tiene " + entradasActuales + " entradas.");
+                    System.out.println("\nActualmente tiene " + entradasActuales + " entradas.");
                     System.out.println("Puede agregar hasta " + maxEntradasDisponibles + " más.");
 
                     agregarEntrada(scanner);
@@ -274,9 +272,9 @@ public class InterfazUsuario {
                 }
             }
             case 2 -> {
-                // Dentro del método para modificar la compra en InterfazUsuario
                 gestorVentas.eliminarEntradaDeCliente(clienteActual, scanner, teatro);
             }
+
             case 3 -> {
                 // Primero verificamos y mostramos las entradas del cliente para modificar
                 if (clienteActual.getEntradasCompradas().isEmpty()) {
@@ -293,7 +291,7 @@ public class InterfazUsuario {
     
                 System.out.print("Ingrese el ID de la entrada a modificar: ");
                 int idVenta = scanner.nextInt();
-                scanner.nextLine(); // Limpiar buffer
+                scanner.nextLine();
 
                 // Desplegar lista de zonas disponibles
                 String[] zonasDisponibles = {"VIP", "Palco", "Platea Baja", "Platea Alta", "Galeria"};  // Puedes ajustar el arreglo según corresponda
@@ -304,7 +302,7 @@ public class InterfazUsuario {
     
                 System.out.print("Ingrese el número de la nueva zona: ");
                 int opcionZona = scanner.nextInt();
-                scanner.nextLine(); // Limpiar buffer
+                scanner.nextLine();
 
                 if (opcionZona < 1 || opcionZona > zonasDisponibles.length) {
                     System.out.println("Opción de zona inválida.");
@@ -329,7 +327,8 @@ public class InterfazUsuario {
                 // Se llama al método que modifica el asiento buscándolo en las entradas del cliente
                 gestorVentas.modificarAsiento(idVenta, nuevaZona, nuevaFilaChar, nuevaColumna, clienteActual);
             }
-            default -> System.out.println("❌ Opción inválida.");
+
+            default -> System.out.println("Opción inválida.");
         }
     }
 
@@ -342,17 +341,17 @@ public class InterfazUsuario {
 
         System.out.println("\n--- Procesar Pago ---");
 
-        if (entradas.isEmpty()) { // 🔹 Usa `entradas` en lugar de `entradasCompradas`
-            System.out.println("❌ No hay compras realizadas. Por favor, compre sus entradas antes de proceder al pago.");
+        if (entradas.isEmpty()) { 
+            System.out.println("No hay compras realizadas. Por favor, compre sus entradas antes de proceder al pago.");
             return;
         }
 
-        // 🔹 Mostrar resumen de compra
+        // Mostrar resumen de compra
         double total = 0;
         System.out.println("\n--- Resumen de Compra ---");
-        System.out.println("Cantidad de Entradas: " + entradas.size()); // 🔹 Usa `entradas`
+        System.out.println("Cantidad de Entradas: " + entradas.size()); 
 
-        for (Entrada entrada : entradas) { // 🔹 Usa `entradas` en lugar de `entradasCompradas`
+        for (Entrada entrada : entradas) {
             double precioFinal = entrada.getPrecioBase() - entrada.getDescuentoAplicado();
             total += precioFinal;
         }
@@ -360,10 +359,10 @@ public class InterfazUsuario {
         System.out.println("Total a Pagar: $" + total);
         System.out.println("------------------------");
 
-        // 🔹 Confirmar antes de proceder
+        // Confirmar antes de proceder
         System.out.print("¿Desea continuar con el pago? (S/N): ");
         if (!scanner.nextLine().equalsIgnoreCase("S")) {
-            System.out.println("❌ Pago cancelado. Puede modificar su compra si lo desea.");
+            System.out.println("Pago cancelado. Puede modificar su compra si lo desea.");
             return;
         }
 
@@ -380,11 +379,11 @@ public class InterfazUsuario {
             case 1 -> procesarPagoDebito(scanner);
             case 2 -> procesarPagoCredito(scanner);
             case 3 -> {
-                System.out.println("❌ Compra cancelada. Vuelve pronto.");
+                System.out.println("Compra cancelada. Vuelve pronto.");
                 return;
             }
             default -> {
-                System.out.println("❌ Opción inválida.");
+                System.out.println("Opción inválida.");
                 return;
             }
         }
@@ -396,15 +395,14 @@ public class InterfazUsuario {
         //System.out.println("🔍 Generando boleta con entradas: " + entradas);
         gestorVentas.generarBoleta(clienteActual);
 
-        /* - codigo para guardar entradas en un archivo aparte, aun en fase de pruebas
         // Persistencia: Guarda cada entrada en el archivo CSV
         for (Entrada entrada : entradas) {
             PersistenciaEntradas.guardarEntrada(entrada, "entradas.csv");
         }
-        */
+        
 
-        entradas.clear(); // 🔹 Limpia las entradas registradas tras el pago exitoso
-        System.out.println("✅ Compra completada correctamente.");
+        entradas.clear(); // Limpia las entradas registradas tras el pago exitoso
+        System.out.println("Compra completada correctamente.");
 
     }
 
@@ -426,25 +424,25 @@ public class InterfazUsuario {
         do {
             System.out.print("Seleccione el número de cuotas (1 a 12): ");
             cuotas = scanner.nextInt();
-            scanner.nextLine(); // Limpiar buffer
+            scanner.nextLine();
 
             if (cuotas < 1 || cuotas > 12) {
-                System.out.println("❌ Número de cuotas inválido. Intente nuevamente.");
+                System.out.println("Número de cuotas inválido. Intente nuevamente.");
             }
         } while (cuotas < 1 || cuotas > 12);
 
         System.out.println("Procesando pago con tarjeta de crédito en " + cuotas + " cuotas...");
         esperarProcesamiento();
 
-        System.out.println("✅ Pago confirmado en " + cuotas + " cuotas. Su boleta y entradas serán enviadas al correo " + correo);
+        System.out.println("Pago confirmado en " + cuotas + " cuotas. Su boleta y entradas serán enviadas al correo " + correo);
     }
 
-    // 🔹 Simulación de procesamiento de pago
+    // Simulación de procesamiento de pago
     private void esperarProcesamiento() {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
-            System.out.println("❌ Error en la simulación de pago.");
+            System.out.println("Error en la simulación de pago.");
         }
     }
 

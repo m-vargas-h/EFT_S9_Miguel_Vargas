@@ -73,7 +73,7 @@ public class Cliente {
     public void agregarEntrada(Entrada entrada) {
         if (entradasCompradas.size() < 5) {
             entradasCompradas.add(entrada);
-            System.out.println("✔ Entrada agregada para " + nombre);
+            System.out.println("Entrada agregada para " + nombre);
         } else {
             System.out.println("Límite de 5 entradas alcanzado para este cliente.");
         }
@@ -82,7 +82,7 @@ public class Cliente {
     // Método para eliminar una entrada
     public void eliminarEntrada(int idVenta) {
         entradasCompradas.removeIf(entrada -> entrada.getIdVenta() == idVenta);
-        System.out.println("✔ Entrada eliminada correctamente.");
+        System.out.println("Entrada eliminada correctamente.");
     }
 
     // Método para mostrar las entradas compradas

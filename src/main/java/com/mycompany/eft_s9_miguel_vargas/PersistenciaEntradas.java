@@ -14,10 +14,7 @@ public class PersistenciaEntradas {
 
     /**
      * Guarda una entrada en el archivo CSV.
-     * Cada entrada se escribe como una línea con campos separados por comas.
-     *
-     * @param entrada    Objeto Entrada a guardar.
-     * @param rutaArchivo Ruta del archivo CSV (por ejemplo, "entradas.csv").
+     * Cada entrada se escribe como una línea con campos separados por comas..
      */
     public static void guardarEntrada(Entrada entrada, String rutaArchivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo, true))) {
@@ -39,9 +36,6 @@ public class PersistenciaEntradas {
 
     /**
      * Lee el archivo CSV y retorna una lista de entradas.
-     *
-     * @param rutaArchivo Ruta del archivo CSV.
-     * @return Lista de objetos Entrada leídos del archivo.
      */
     public static List<Entrada> leerEntradas(String rutaArchivo) {
         List<Entrada> entradas = new ArrayList<>();
@@ -82,9 +76,6 @@ public class PersistenciaEntradas {
     /**
      * Escribe una lista completa de entradas en el archivo CSV, sobrescribiendo su contenido.
      * Esta opción puede ser útil si necesitas actualizar o eliminar registros.
-     *
-     * @param entradas    Lista de entradas que se desean escribir en el archivo.
-     * @param rutaArchivo Ruta del archivo CSV.
      */
     public static void escribirEntradas(List<Entrada> entradas, String rutaArchivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {

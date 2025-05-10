@@ -3,7 +3,7 @@ package com.mycompany.eft_s9_miguel_vargas;
 
 public class Entrada {
     private int idVenta;
-    private String zona; // VIP, Normal, Palco
+    private String zona;
     private int fila;
     private int columna;
     private double precioBase;
@@ -33,7 +33,7 @@ public class Entrada {
                " | Precio final: $" + calcularPrecioFinal();
     }
 
-    public int getZonaSeleccionada() { // 🔹 Método getter
+    public int getZonaSeleccionada() {
         return zonaSeleccionada;
     }
 
