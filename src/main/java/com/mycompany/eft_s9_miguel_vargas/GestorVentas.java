@@ -8,6 +8,7 @@ package com.mycompany.eft_s9_miguel_vargas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GestorVentas {
     private List<Entrada> entradasVendidas;
@@ -25,20 +26,58 @@ public class GestorVentas {
         return contadorVentas++;
     }
 
-    // Método para agregar una entrada
-    public void agregarEntrada(Entrada entrada) {
-        listaEntradas.add(entrada); // 🔹 Asegurar que usamos la lista correcta en `GestorVentas`
-        System.out.println("✔ Entrada registrada: " + entrada.getEntradaActualizada());
-        //System.out.println("✔ Entrada agregada a la lista de GestorVentas: " + entrada.getFilaChar() + (entrada.getColumna() + 1));
-    }
+    // Metodo para elminar una entrada
+    public void eliminarEntradaDeCliente(Cliente cliente, Scanner scanner, Teatro teatro) {
+        System.out.println("\n--- Eliminar Entrada ---");
 
-    // Método para eliminar una entrada
-    public void eliminarEntrada(int idVenta) {
-        boolean eliminada = entradasVendidas.removeIf(entrada -> entrada.getIdVenta() == idVenta);
-        if (eliminada) {
-            System.out.println("Entrada eliminada correctamente.");
+        // Obtener la lista de entradas compradas del cliente actual
+        List<Entrada> entradasCliente = cliente.getEntradasCompradas();
+    
+        if (entradasCliente.isEmpty()) {
+            System.out.println("❌ No tienes entradas pendientes de pago.");
+            return;
+        }
+
+        // Mostrar las entradas disponibles para eliminar
+        System.out.println("\n--- Entradas disponibles para eliminar ---");
+        for (Entrada entrada : entradasCliente) {
+            System.out.println("ID: " + entrada.getIdVenta() +
+                                " | Zona: " + entrada.getZona() +
+                                " | Asiento: " + entrada.getFilaChar() + (entrada.getColumna() + 1) +
+                                " | Precio: $" + entrada.getPrecioBase());
+        }
+    
+        // Solicitar el ID de la entrada a eliminar
+        System.out.print("Ingrese el ID de la entrada a eliminar: ");
+        int idVenta = scanner.nextInt();
+        scanner.nextLine(); // Consumir el salto de línea
+
+        // Buscar la entrada a eliminar
+        Entrada entradaAEliminar = null;
+        for (Entrada entrada : entradasCliente) {
+            if (entrada.getIdVenta() == idVenta) {
+                entradaAEliminar = entrada;
+                break;
+            }
+        }
+
+        if (entradaAEliminar == null) {
+            System.out.println("❌ No se encontró la entrada con ID: " + idVenta);
+            return;
+        }
+    
+        // Intentar liberar el asiento con la información de la entrada
+        // Nota: Asegúrate de que getFila() y getColumna() devuelvan índices válidos para la matriz.
+        boolean liberado = teatro.liberarAsiento(entradaAEliminar.getZona(), 
+                                                entradaAEliminar.getFila(), 
+                                                entradaAEliminar.getColumna());
+    
+        if (liberado) {
+            // Solo se elimina la entrada si el asiento se liberó correctamente
+            entradasCliente.remove(entradaAEliminar);
+            System.out.println("✅ Entrada eliminada y asiento liberado correctamente.");
         } else {
-            System.out.println("No se encontró la entrada con ID: " + idVenta);
+            System.out.println("❌ Hubo un problema al liberar el asiento. No se eliminó la entrada.");
         }
     }
 
@@ -87,18 +126,22 @@ public class GestorVentas {
         };
     }
 
-    public void modificarAsiento(int idVenta, String nuevaZona, char nuevaFilaChar, int nuevaColumna) {
-        for (Entrada entrada : entradasVendidas) {
+    public void modificarAsiento(int idVenta, String nuevaZona, char nuevaFilaChar, int nuevaColumna, Cliente cliente) {
+        boolean encontro = false;
+        for (Entrada entrada : cliente.getEntradasCompradas()) {
             if (entrada.getIdVenta() == idVenta) {
                 entrada.setZona(nuevaZona);
-                entrada.setFila(nuevaFilaChar - 'A');
+                entrada.setFila(nuevaFilaChar - 'A');  // Suponiendo que conviertes la fila (A=0, B=1, ...)
                 entrada.setFilaChar(nuevaFilaChar);
                 entrada.setColumna(nuevaColumna);
                 System.out.println("Asiento modificado correctamente.");
-                return;
+                encontro = true;
+                break;
             }
         }
-        System.out.println("No se encontró la entrada con ID: " + idVenta);
+        if (!encontro) {
+            System.out.println("No se encontró la entrada con ID: " + idVenta);
+        }
     }
 
     public void generarBoleta(Cliente cliente) {

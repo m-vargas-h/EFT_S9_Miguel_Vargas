@@ -1,6 +1,18 @@
 # Historial de cambios
 
-## 10/05/2025 - V1.0 Sistema de ventas Teatro Moro
+## 10/05/2025 - Corrección opciones modificación de entradas (last commit)
+- Se corrige una serie de errores que impedían que el menu de modificación de compra funcionara correctamente
+    - La opción de agregar entradas ya no pide la información duplicada y agrega las entradas extras al plano 
+        de asientos.
+    - La opción de eliminar ahora libera un asiento cuando es eliminado de la transacción en curso.
+    - La opción de modificación ahora permite cambiar un asiento de zona mostrando el plano de entradas.
+
+- Se crea la clase PersistenciaEntradas para implementar una base simple que guarde el historial de entradas
+compradas, de esta forma no se perderá la información de entradas compradas (en desarrollo).
+
+---
+
+### 10/05/2025 - V1.0 Sistema de ventas Teatro Moro (commit bcc2856)
 - Primera version funcional del sistema, actualmente el sistema posee las siguientes características:  
     - Registro de Clientes:
         Permite a los usuarios registrarse ingresando su nombre, correo, edad y género, asignándoles un ID único y determinando su tipo de cliente para aplicar descuentos.

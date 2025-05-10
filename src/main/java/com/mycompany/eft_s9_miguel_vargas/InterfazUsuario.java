@@ -172,7 +172,7 @@ public class InterfazUsuario {
                 Entrada entrada = new Entrada(idVenta, zona, fila, asiento, precioBase, filaChar, esReserva, descuentoAplicado);
                 
                 entradasCompradas.add(entrada);
-                gestorVentas.agregarEntrada(entrada);
+                //gestorVentas.agregarEntrada(entrada);
                 clienteActual.agregarEntrada(entrada);
                 System.out.println("✔ Entrada #" + (i + 1) + " asignada correctamente.");
             } else {
@@ -192,6 +192,37 @@ public class InterfazUsuario {
                                ", Precio final: $" + (entrada.getPrecioBase() - entrada.getDescuentoAplicado()));
         }
         System.out.println("-------------------------");
+    }
+
+    public void agregarEntrada(Scanner scanner) {
+        System.out.println("\n--- Agregar Entrada ---");
+
+        // Se obtiene el número de entradas compradas en la transacción actual.
+        int currentCount = clienteActual.getEntradasCompradas().size();
+        int maxAllowed = 5; // Límite total permitido por transacción
+        int disponibles = maxAllowed - currentCount;
+    
+        if (disponibles <= 0) {
+            System.out.println("❌ No puedes agregar más entradas en esta transacción.");
+            return;
+        }
+    
+        System.out.println("Actualmente tienes " + currentCount + " entrada(s).");
+        System.out.println("Puedes agregar hasta " + disponibles + " entrada(s) más.");
+    
+        System.out.print("¿Cuántas entradas deseas agregar? (1-" + disponibles + "): ");
+        int cantidadAAgregar = scanner.nextInt();
+        scanner.nextLine(); // Consumir salto de línea
+
+        if (cantidadAAgregar < 1 || cantidadAAgregar > disponibles) {
+            System.out.println("❌ Cantidad inválida. Solo puedes agregar entre 1 y " + disponibles + " entrada(s).");
+            return;
+        }
+    
+        // Aquí simplemente redirigimos al flujo de compra de entradas
+        // Se asume que el método comprarEntradas(int idCliente) ya maneja
+        // el proceso de selección de asientos sin volver a pedir el ID.
+        comprarEntradas(clienteActual.getIdCliente());
     }
 
     private void verAsientosDisponibles() {
@@ -237,42 +268,66 @@ public class InterfazUsuario {
                 } else {
                     System.out.println("\n✔ Actualmente tiene " + entradasActuales + " entradas.");
                     System.out.println("Puede agregar hasta " + maxEntradasDisponibles + " más.");
-            
-                    int cantidadEntradas;
-                    do {
-                        System.out.print("\n¿Cuántas entradas desea agregar? (1-" + maxEntradasDisponibles + "): ");
-                        cantidadEntradas = scanner.nextInt();
-                        scanner.nextLine(); // Limpiar buffer
-            
-                        if (cantidadEntradas < 1 || cantidadEntradas > maxEntradasDisponibles) {
-                            System.out.println("❌ Número inválido. Debe elegir entre 1 y " + maxEntradasDisponibles + " entradas.");
-                        }
-                    } while (cantidadEntradas < 1 || cantidadEntradas > maxEntradasDisponibles);
-            
-                    // 🔹 Aquí está el error: `comprarEntradas();` debe recibir `maxEntradasDisponibles`
-                    comprarEntradas(maxEntradasDisponibles); // 🔹 Asegura que se pasa el argumento correcto
+
+                    agregarEntrada(scanner);
+
                 }
             }
             case 2 -> {
-                System.out.print("Ingrese el ID de la entrada a eliminar: ");
-                int idVenta = scanner.nextInt();
-                scanner.nextLine(); // Limpiar buffer
-                gestorVentas.eliminarEntrada(idVenta);
+                // Dentro del método para modificar la compra en InterfazUsuario
+                gestorVentas.eliminarEntradaDeCliente(clienteActual, scanner, teatro);
             }
             case 3 -> {
+                // Primero verificamos y mostramos las entradas del cliente para modificar
+                if (clienteActual.getEntradasCompradas().isEmpty()) {
+                    System.out.println("No tiene entradas para modificar.");
+                    break;
+                }
+    
+                System.out.println("Sus entradas:");
+                for (Entrada e : clienteActual.getEntradasCompradas()) {
+                    System.out.println("ID: " + e.getIdVenta() +
+                                        " | Zona: " + e.getZona() +
+                                        " | Asiento: " + e.getFilaChar() + (e.getColumna() + 1));
+                }
+    
                 System.out.print("Ingrese el ID de la entrada a modificar: ");
                 int idVenta = scanner.nextInt();
                 scanner.nextLine(); // Limpiar buffer
+
+                // Desplegar lista de zonas disponibles
+                String[] zonasDisponibles = {"VIP", "Palco", "Platea Baja", "Platea Alta", "Galeria"};  // Puedes ajustar el arreglo según corresponda
+                System.out.println("Zonas disponibles:");
+                for (int i = 0; i < zonasDisponibles.length; i++) {
+                    System.out.println((i + 1) + ". " + zonasDisponibles[i]);
+                }
     
-                System.out.print("Ingrese nueva zona (VIP, Normal, Palco): ");
-                String nuevaZona = scanner.nextLine().toLowerCase();
+                System.out.print("Ingrese el número de la nueva zona: ");
+                int opcionZona = scanner.nextInt();
+                scanner.nextLine(); // Limpiar buffer
+
+                if (opcionZona < 1 || opcionZona > zonasDisponibles.length) {
+                    System.out.println("Opción de zona inválida.");
+                    break;
+                }
+                // Se guarda la zona seleccionada (se pasa a minúsculas o se deja como desees)
+                String nuevaZona = zonasDisponibles[opcionZona - 1].toLowerCase();
+
+                // Mostrar el mapa de asientos para la zona seleccionada
+                System.out.println("Mostrando mapa de asientos para la zona " + nuevaZona + ":");
+                // Supongamos que tienes un método en la clase Teatro:
+                teatro.mostrarZona(nuevaZona);
+                // Si no cuentas con este método, podrías implementar un ejemplo simple aquí
+
                 System.out.print("Ingrese nueva fila (A, B, C...): ");
                 char nuevaFilaChar = scanner.next().toUpperCase().charAt(0);
+
                 System.out.print("Ingrese nuevo número de asiento: ");
                 int nuevaColumna = scanner.nextInt() - 1;
                 scanner.nextLine(); // Limpiar buffer
-    
-                gestorVentas.modificarAsiento(idVenta, nuevaZona, nuevaFilaChar, nuevaColumna);
+
+                // Se llama al método que modifica el asiento buscándolo en las entradas del cliente
+                gestorVentas.modificarAsiento(idVenta, nuevaZona, nuevaFilaChar, nuevaColumna, clienteActual);
             }
             default -> System.out.println("❌ Opción inválida.");
         }
@@ -340,6 +395,14 @@ public class InterfazUsuario {
          */
         //System.out.println("🔍 Generando boleta con entradas: " + entradas);
         gestorVentas.generarBoleta(clienteActual);
+
+        /* - codigo para guardar entradas en un archivo aparte, aun en fase de pruebas
+        // Persistencia: Guarda cada entrada en el archivo CSV
+        for (Entrada entrada : entradas) {
+            PersistenciaEntradas.guardarEntrada(entrada, "entradas.csv");
+        }
+        */
+
         entradas.clear(); // 🔹 Limpia las entradas registradas tras el pago exitoso
         System.out.println("✅ Compra completada correctamente.");
 
