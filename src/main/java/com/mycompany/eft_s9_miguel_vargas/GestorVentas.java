@@ -12,6 +12,8 @@ import java.util.List;
 public class GestorVentas {
     private List<Entrada> entradasVendidas;
     private int contadorVentas; // Generador de ID único
+    private List<Entrada> listaEntradas = new ArrayList<>(); // 🔹 Asegura que la lista existe en la clase
+    private List<Cliente> listaClientes = new ArrayList<>(); // 🔹 Debe existir en la clase
 
     public GestorVentas() {
         this.entradasVendidas = new ArrayList<>();
@@ -25,8 +27,9 @@ public class GestorVentas {
 
     // Método para agregar una entrada
     public void agregarEntrada(Entrada entrada) {
-        entradasVendidas.add(entrada);
+        listaEntradas.add(entrada); // 🔹 Asegurar que usamos la lista correcta en `GestorVentas`
         System.out.println("✔ Entrada registrada: " + entrada.getEntradaActualizada());
+        //System.out.println("✔ Entrada agregada a la lista de GestorVentas: " + entrada.getFilaChar() + (entrada.getColumna() + 1));
     }
 
     // Método para eliminar una entrada
@@ -99,48 +102,61 @@ public class GestorVentas {
     }
 
     public void generarBoleta(Cliente cliente) {
-    if (cliente.getEntradasCompradas().isEmpty()) {
-        System.out.println("❌ No hay entradas compradas para generar la boleta.");
-        return;
-    }
+        if (cliente.getEntradasCompradas().isEmpty()) {
+            System.out.println("❌ No hay entradas compradas para generar la boleta.");
+            return;
+        }
 
-    System.out.println("\n--------------- BOLETA ---------------");
-    System.out.println("                Nº 000" + cliente.getIdCompraActual());
-    System.out.println("             TEATRO MORO");
-    System.out.println(" SHOW: De vuelta a clases con el GOTH");
-    System.out.println("--------------------------------------");
-
-    double totalNeto = 0;
-    double totalIVA = 0;
-    double totalFinal = 0;
-
-    for (Entrada entrada : cliente.getEntradasCompradas()) {
-        String zona = switch (entrada.getZonaSeleccionada()) {
-            case 1 -> "VIP";
-            case 2 -> "Normal";
-            case 3 -> "Palco";
-            default -> "Desconocida";
-        };
-
-        double precioConDescuento = entrada.getPrecioBase() * (1 - entrada.getDescuentoAplicado());
-        double ivaPorEntrada = precioConDescuento * 0.19;
-        double precioNetoEntrada = precioConDescuento - ivaPorEntrada;
-
-        totalNeto += precioNetoEntrada;
-        totalIVA += ivaPorEntrada;
-        totalFinal += precioConDescuento;
-
-        System.out.println("Entrada: Zona " + zona + ", Asiento: " + entrada.getFilaChar() + (entrada.getColumna() + 1));
-        System.out.println("Precio base: $" + entrada.getPrecioBase());
-        System.out.println("Descuento aplicado: " + (entrada.getDescuentoAplicado() * 100) + "%");
+        System.out.println("\n--------------- BOLETA ---------------");
+        System.out.println("                Nº 000" + cliente.getIdCompraActual());
+        System.out.println("             TEATRO MORO");
+        System.out.println(" SHOW: De vuelta a clases con el GOTH");
         System.out.println("--------------------------------------");
+
+        double totalNeto = 0;
+        double totalIVA = 0;
+        double totalFinal = 0;
+
+        for (Entrada entrada : cliente.getEntradasCompradas()) {
+            String zona = switch (entrada.getZonaSeleccionada()) {
+                case 1 -> "VIP";
+                case 2 -> "Normal";
+                case 3 -> "Palco";
+                default -> "Desconocida";
+            };
+
+            double precioConDescuento = entrada.getPrecioBase() * (1 - entrada.getDescuentoAplicado());
+            double ivaPorEntrada = precioConDescuento * 0.19;
+            double precioNetoEntrada = precioConDescuento - ivaPorEntrada;
+
+            totalNeto += precioNetoEntrada;
+            totalIVA += ivaPorEntrada;
+            totalFinal += precioConDescuento;
+
+            System.out.println("Entrada: Zona " + zona + ", Asiento: " + entrada.getFilaChar() + (entrada.getColumna() + 1));
+            System.out.println("Precio base: $" + entrada.getPrecioBase());
+            System.out.println("Descuento aplicado: " + (entrada.getDescuentoAplicado() * 100) + "%");
+            System.out.println("--------------------------------------");
+        }
+
+        System.out.println("-------- RESUMEN DE LA COMPRA --------");
+        System.out.println("Subtotal (Neto)     : $" + totalNeto);
+        System.out.println("IVA (19%)           : $" + totalIVA);
+        System.out.println("TOTAL FINAL A PAGAR : $" + totalFinal);
+        System.out.println("--------------------------------------");
+        System.out.println("¡Gracias por tu compra!");
+
+        cliente.setIdCompraActual(cliente.getIdCompraActual() + 1); //incrementamos en 1 para asignar un nuevo valor a la proxima boleta
+
     }
 
-    System.out.println("-------- RESUMEN DE LA COMPRA --------");
-    System.out.println("Subtotal (Neto)     : $" + totalNeto);
-    System.out.println("IVA (19%)           : $" + totalIVA);
-    System.out.println("TOTAL FINAL A PAGAR : $" + totalFinal);
-    System.out.println("--------------------------------------");
-    System.out.println("¡Gracias por tu compra!");
-}
+    public List<Entrada> getEntradasPorCliente(int idCliente) {
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getIdCliente() == idCliente) {
+                return cliente.getEntradasCompradas(); // 🔹 Las entradas están dentro del cliente
+            }
+        }
+        return new ArrayList<>(); // 🔹 Si el cliente no existe, retorna una lista vacía
+    }
+
 }

@@ -1,6 +1,24 @@
 # Historial de cambios
 
-## 08/05/2025 - Implementación medios de pago (last commit)
+## 10/05/2025 - V1.0 Sistema de ventas Teatro Moro
+- Primera version funcional del sistema, actualmente el sistema posee las siguientes características:  
+    - Registro de Clientes:
+        Permite a los usuarios registrarse ingresando su nombre, correo, edad y género, asignándoles un ID único y determinando su tipo de cliente para aplicar descuentos.
+    - Compra de Entradas:
+        El sistema guía al usuario para seleccionar la zona y el asiento deseado dentro del teatro. Las zonas incluyen VIP, Platea Baja, Platea Alta, Palco y Galería, cada una con su propia configuración de asientos. Se asigna un identificador único a cada entrada y se aplican descuentos según el tipo de cliente.
+    - Gestión de Ventas y Boleta:
+        Las entradas compradas se asocian al cliente, se registran en el gestor de ventas y, al procesar el pago, se genera una boleta con el número formateado (iniciando en 0001) y el detalle de cada entrada, incluyendo el precio final y el descuento aplicado.
+    - Interfaz de Usuario y Funcionalidades Adicionales:
+        La aplicación cuenta con un menú interactivo que permite al usuario:
+        - Registrar clientes.
+        - Visualizar asientos disponibles en el teatro.
+        - Consultar promociones.
+        - Modificar compras (agregar, eliminar o cambiar asientos).
+        - Procesar el pago mediante débito o crédito, utilizando la información registrada del cliente.
+
+---
+
+### 08/05/2025 - Implementación medios de pago (commit ad99686)
 - Se implementan las opciones de pago débito y crédito para el menu de compra, ademas de una opción para
     cancelar la transacción.
 

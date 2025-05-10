@@ -279,9 +279,15 @@ public class InterfazUsuario {
     }
 
     public void procesarPago(Scanner scanner) {  
+        List<Entrada> entradas = clienteActual.getEntradasCompradas();
+        /*Esta linea es utilizada para verificar que las entradas se estuviesen cargando bien antes de proceder
+         * con el pago, incluir en el código solo para pruebas de código
+         */
+        //System.out.println("🔍 Entradas recuperadas para pago: " + entradas);
+
         System.out.println("\n--- Procesar Pago ---");
 
-        if (entradasCompradas.isEmpty()) {
+        if (entradas.isEmpty()) { // 🔹 Usa `entradas` en lugar de `entradasCompradas`
             System.out.println("❌ No hay compras realizadas. Por favor, compre sus entradas antes de proceder al pago.");
             return;
         }
@@ -289,9 +295,9 @@ public class InterfazUsuario {
         // 🔹 Mostrar resumen de compra
         double total = 0;
         System.out.println("\n--- Resumen de Compra ---");
-        System.out.println("Cantidad de Entradas: " + entradasCompradas.size());
+        System.out.println("Cantidad de Entradas: " + entradas.size()); // 🔹 Usa `entradas`
 
-        for (Entrada entrada : entradasCompradas) {
+        for (Entrada entrada : entradas) { // 🔹 Usa `entradas` en lugar de `entradasCompradas`
             double precioFinal = entrada.getPrecioBase() - entrada.getDescuentoAplicado();
             total += precioFinal;
         }
@@ -309,8 +315,7 @@ public class InterfazUsuario {
         System.out.println("\nSeleccione el medio de pago:");
         System.out.println("1. Débito");
         System.out.println("2. Crédito");
-        System.out.println("3. Transferencia");
-        System.out.println("4. Cancelar compra");
+        System.out.println("3. Cancelar compra");
         System.out.print("Ingrese opción: ");
 
         int opcionPago = scanner.nextInt();
@@ -329,15 +334,20 @@ public class InterfazUsuario {
             }
         }
 
-        // 🔹 Generar boleta solo si el pago fue exitoso
+        //Generar boleta solo si el pago fue exitoso
+        /* Al igual que la linea del inicio del método, esta es utilizada solo con fines de depuración, para poder
+         * hacer las pruebas necesarias sobre como se registra la información, no incluir en el código final
+         */
+        //System.out.println("🔍 Generando boleta con entradas: " + entradas);
         gestorVentas.generarBoleta(clienteActual);
-        entradasCompradas.clear();
+        entradas.clear(); // 🔹 Limpia las entradas registradas tras el pago exitoso
         System.out.println("✅ Compra completada correctamente.");
+
     }
 
     private void procesarPagoDebito(Scanner scanner) {
-        System.out.print("Antes de continuar, ingrese su correo electrónico: ");
-        String correo = scanner.nextLine();
+        // Utiliza el correo ya registrado para el cliente actual
+        String correo = clienteActual.getCorreo();
 
         System.out.println("Procesando pago con tarjeta de débito...");
         esperarProcesamiento();
@@ -346,8 +356,8 @@ public class InterfazUsuario {
     }
 
     private void procesarPagoCredito(Scanner scanner) {
-        System.out.print("Antes de continuar, ingrese su correo electrónico: ");
-        String correo = scanner.nextLine();
+        // Utiliza el correo ya registrado para el cliente actual
+        String correo = clienteActual.getCorreo();
 
         int cuotas;
         do {

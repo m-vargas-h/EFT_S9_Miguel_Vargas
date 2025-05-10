@@ -11,7 +11,7 @@ public class Cliente {
     private String tipoCliente;
     private int idCliente;
     private List<Entrada> entradasCompradas;
-     private int idCompraActual;
+    private int idCompraActual = 1;
 
     public Cliente(String nombre, String correo, int edad, char genero, int idCliente) {
         this.nombre = nombre;
@@ -63,6 +63,10 @@ public class Cliente {
 
     public List<Entrada> getEntradasCompradas() {
         return entradasCompradas;
+    }
+
+    public void setIdCompraActual(int idCompraActual) {
+        this.idCompraActual = idCompraActual;
     }
 
     // Método para agregar una entrada al cliente
