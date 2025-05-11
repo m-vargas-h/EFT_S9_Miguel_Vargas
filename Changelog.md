@@ -1,6 +1,11 @@
 # Historial de cambios
 
-## 11/05/2025 - v1.1.1 Correcciones menores (last commit)
+## 11/05/2025 - v1.1.2 corrección falla NetBeans (last commit)
+- Se corrigió un error en el orden de carga de las clases que provocaba una caída del sistema en NetBeans.
+
+---
+
+### 11/05/2025 - v1.1.1 Correcciones menores (commit 207bb32)
 - Se corrige falla en el código que causaba que la asignación de ID para clientes iniciara en 1 en cada ejecución.
 
 - Se corrige el sistema de GestorVentas para que lea correctamente la lista de clientes existentes.
@@ -9,7 +14,7 @@
 
 ### 10/05/2025 - V1.1 Sistema de ventas Teatro Moro (commit ccc12b3)
 - El programa ahora cuenta con la capacidad de guardar la información de entradas vendidas y clientes registrados
-    en ficheros .scv para recuperar la información en ejecuciones posteriores. Ahora cuando un cliente se registre
+    en ficheros .csv para recuperar la información en ejecuciones posteriores. Ahora cuando un cliente se registre
     solo deberá completar su información 1 vez, posterior a eso podrá comprar utilizando solo su ID.
 
 - Se corrige la generación de la boleta para que muestre la información de forma correcta
