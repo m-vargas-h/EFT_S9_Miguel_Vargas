@@ -1,6 +1,9 @@
 
 package com.mycompany.eft_s9_miguel_vargas;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,19 +11,43 @@ import java.util.Scanner;
 public class InterfazUsuario {
 
     private Cliente clienteActual; // Cliente accesible en toda la clase
-
     private GestorVentas gestorVentas;
     private Teatro teatro;
     private Scanner scanner;
+    private int contadorID; // Para generar IDs únicos
 
+    // Constructor
     public InterfazUsuario(GestorVentas gestorVentas, Teatro teatro) {
         this.gestorVentas = gestorVentas;
         this.teatro = teatro;
         this.scanner = new Scanner(System.in);
+        // Inicializamos contadorID leyendo el CSV
+        this.contadorID = obtenerUltimoId("clientes.csv") + 1;
     }
 
-    private List<Cliente> clientesRegistrados = new ArrayList<>();
-    private int contadorID = 1; // Para generar IDs únicos
+    // Método para leer el CSV y obtener el último ID asignado
+    private int obtenerUltimoId(String archivoCSV) {
+        int maxId = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(archivoCSV))) {
+            String linea;
+            // Suponiendo que el archivo tiene cabecera, se omite la primera línea
+            if ((linea = br.readLine()) != null) {
+                // Puedes agregar alguna validación aquí si la cabecera tiene un formato específico
+            }
+            while ((linea = br.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue; // Ignora líneas vacías
+                String[] datos = linea.split(",");
+                int id = Integer.parseInt(datos[0]);
+                if (id > maxId) {
+                    maxId = id;
+                }
+            }
+        } catch (IOException e) {
+            // Si ocurre error (o el archivo no existe) se asume que es la primera vez
+            System.out.println("No se pudo leer el archivo de clientes, se comenzará desde ID=1.");
+        }
+        return maxId;
+    }
 
     private void registrarCliente() {
         System.out.println("\n--- Registro de Cliente ---");
@@ -39,17 +66,19 @@ public class InterfazUsuario {
         char genero = scanner.next().toUpperCase().charAt(0);
         scanner.nextLine();
 
-        // Generar ID único
+        // Generar ID único basado en el contador
         int idCliente = contadorID++;
 
         // Crear nuevo cliente y agregarlo a la lista
         Cliente nuevoCliente = new Cliente(nombre, correo, edad, genero, idCliente);
-        clientesRegistrados.add(nuevoCliente);
+        // Agregar el cliente a la lista centralizada en GestorVentas
+        gestorVentas.getListaClientes().add(nuevoCliente);
+
 
         System.out.println("\n✔ Cliente registrado correctamente.");
         System.out.println("ID Asignado: " + idCliente);
 
-        // Registramos el cliente en el fichero para tener una bse de datos actualizada
+        // Registramos el cliente en el fichero para tener una base de datos actualizada
         PersistenciaClientes.guardarCliente(nuevoCliente, "clientes.csv");
     }
 
@@ -85,13 +114,8 @@ public class InterfazUsuario {
         return true;
     }
 
-    private Cliente buscarClientePorID(int id) {
-        for (Cliente cliente : clientesRegistrados) {
-            if (cliente.getIdCliente() == id) {
-                return cliente;
-            }
-        }
-        return null; // Retorna null si no encuentra el cliente
+    private Cliente buscarClientePorID(int idCliente) {
+        return gestorVentas.buscarClientePorID(idCliente);
     }
 
     private void comprarEntradas(int maxEntradas) {
@@ -313,9 +337,7 @@ public class InterfazUsuario {
 
                 // Mostrar el mapa de asientos para la zona seleccionada
                 System.out.println("Mostrando mapa de asientos para la zona " + nuevaZona + ":");
-                // Supongamos que tienes un método en la clase Teatro:
                 teatro.mostrarZona(nuevaZona);
-                // Si no cuentas con este método, podrías implementar un ejemplo simple aquí
 
                 System.out.print("Ingrese nueva fila (A, B, C...): ");
                 char nuevaFilaChar = scanner.next().toUpperCase().charAt(0);
